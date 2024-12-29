@@ -43,12 +43,12 @@ class TrainingContext:  # TODO: deal with _attrs
     @wrap_in_logger(level="debug", ignore_args=(0,))
     def __init__(
             self,
-            net_arch_config: tp.Dict[str, tp.Any],  # result of json.load(*)
+            net_factory_function_path: pathlib.PosixPath,
             learning_config: LearningConfig
     ):
         self._init_dataloaders(learning_config)
         self._init_device(learning_config)
-        self._init_net(net_arch_config)
+        self._init_net(net_factory_function_path)
         self._init_hyper_params(learning_config)
         self._init_checkpoint_settings(learning_config)
 
@@ -158,8 +158,13 @@ class TrainingContext:  # TODO: deal with _attrs
         self._device = torch.device(learning_config.device)
 
     @wrap_in_logger(level="debug", ignore_args=(0,))
-    def _init_net(self, net_arch_config: tp.Dict[str, tp.Any]) -> None:
-        self._net = NetFactory.create_network(net_arch_config)
+    def _init_net(self, net_factory_function_path: pathlib.PosixPath) -> None:
+        if net_factory_function_path.suffix != ".py":
+            raise TypeError(
+                "'*.py' file must be passed as an implementation of the"
+                f" NeuralNetwork, but {net_factory_function_path} passed"
+            )
+        self._net = NetFactory.create_network(net_factory_function_path)
         self._net = self._net.to(self._device)
 
     @wrap_in_logger(level="debug", ignore_args=(0,))

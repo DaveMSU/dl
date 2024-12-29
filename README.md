@@ -5,9 +5,11 @@
 ./dl weld_dataset --config ./exps/lesson_6_nn_intro/configs/dataset_welding.json
 ```
 
-### train: starts learning process, example:
+### train: starts learning process, examples:
 ```
-./dl train --architecture_config ./exps/lesson_6_nn_intro/configs/architecture.json --learning_config ./exps/lesson_6_nn_intro/configs/learning_process.json --log-level INFO
+* rm mnist.log ; ./dl train --net_factory_function_impl ./exps/mnist_classification/configs/net_factory_function.py --learning_config ./exps/mnist_classification/configs/learning_process.json --log-level INFO 2>&1 | tee mnist.log
+* rm lesson6.log ; ./dl train --net_factory_function_impl ./exps/lesson_6_nn_intro/configs/net_factory_function.py --learning_config ./exps/lesson_6_nn_intro/configs/learning_process.json --log-level DEBUG 2>&1 | tee lesson6.log
+* rm lesson7.log ; ./dl train --net_factory_function_impl ./exps/lesson_7_transfer_learning/configs/net_factory_function.py --learning_config ./exps/lesson_7_transfer_learning/configs/learning_process.json --log-level TRACE 2>&1 | tee lesson7.log
 ```
 
 ### tensorboard: creates flask server with tensorboard monitoring on it, the only way to launch it:
