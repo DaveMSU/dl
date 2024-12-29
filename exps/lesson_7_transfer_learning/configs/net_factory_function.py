@@ -7,11 +7,9 @@ def create_a_neural_network_instance():
 
     import torch
 
-
     class Flatten(torch.nn.Module):
         def forward(self, x: torch.Tensor) -> torch.Tensor:
             return x.view(x.size(0), -1)
-
 
     class Bottleneck(torch.nn.Module):
         def __init__(
@@ -22,7 +20,7 @@ def create_a_neural_network_instance():
                 bn2: torch.nn.BatchNorm2d,
                 conv3: torch.nn.Conv2d,
                 bn3: torch.nn.BatchNorm2d,
-                downsample: tp.Optional[torch.nn.Sequential] 
+                downsample: tp.Optional[torch.nn.Sequential]
         ):
             super().__init__()
             self.relu = torch.nn.ReLU(inplace=True)
@@ -35,11 +33,11 @@ def create_a_neural_network_instance():
             out = self.conv1(x)
             out = self.bn1(out)
             out = self.relu(out)
-    
+
             out = self.conv2(out)
             out = self.bn2(out)
             out = self.relu(out)
-    
+
             out = self.conv3(out)
             out = self.bn3(out)
             if self.downsample is not None:
@@ -129,7 +127,6 @@ def create_a_neural_network_instance():
                 )
             )
         )
-
 
     class ResNet50(torch.nn.Module):
         def __init__(self):
@@ -224,7 +221,6 @@ def create_a_neural_network_instance():
         def remove_layer(self, layer_name: str) -> None:
             self._modules_order.remove(layer_name)
             del self._modules[layer_name]
-
 
     class NeuralNetwork(torch.nn.Module):
         def __init__(self):

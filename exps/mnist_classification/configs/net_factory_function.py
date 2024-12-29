@@ -3,11 +3,9 @@ def create_a_neural_network_instance():
 
     import torch
 
-
     class Flatten(torch.nn.Module):
         def forward(self, x: torch.Tensor) -> torch.Tensor:
             return x.view(x.size(0), -1)
-
 
     class NeuralNetwork(torch.nn.Module):
         def __init__(self):
@@ -68,7 +66,7 @@ def create_a_neural_network_instance():
                     ]
                 )
             )
-    
+
         def forward(self, x: torch.Tensor) -> torch.Tensor:
             return self.head(self.backbone(x))
     return NeuralNetwork()
