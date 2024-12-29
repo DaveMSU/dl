@@ -1,3 +1,4 @@
+import pathlib
 import typing as tp
 
 import torch
@@ -16,10 +17,13 @@ from lib import (
 class Trainer:  # TODO: make it a singleton
     def __init__(
             self,
-            net_arch_config: tp.Dict[str, tp.Any],  # result of json.load(*)
+            net_factory_function_path: pathlib.PosixPath,
             learning_config: LearningConfig
     ):
-        self._cntx = TrainingContext(net_arch_config, learning_config)
+        self._cntx = TrainingContext(
+            net_factory_function_path,
+            learning_config
+        )
         self._progress_monitor = ProgressMonitor(
             sub_net_names=[
                 x[0] for x in self._cntx.net.named_children()

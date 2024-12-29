@@ -1,6 +1,7 @@
 import argparse
 import json
 import logging
+import pathlib
 import sys
 
 from numpy import seterr
@@ -22,19 +23,19 @@ def train_add_cmdargs(
     p.set_defaults(main=train_main)
 
     p.add_argument(
-        "-ac", "--architecture_config",
+        "-n", "--net_factory_function_impl",
         required=True,
-        type=str,
+        type=pathlib.Path,
         help=(
-            "POSIX path to the json file that specifies the"
+            "POSIX path to the .py file that specifies the"
             " architecture of the future neural network."  # TODO: example
         )
     )
 
     p.add_argument(
-        "-lc", "--learning_config",
+        "-l", "--learning_config",
         required=True,
-        type=str,
+        type=pathlib.Path,
         help=(
             "POSIX path to the json file that specifies which checkpoint to"
             " use for creation of the neural network instance and that"
@@ -63,10 +64,9 @@ def train_main(cmd_args: argparse.Namespace) -> None:
     if cmd_args.log_level == "INFO":
         seterr(divide='ignore', invalid='ignore')
 
-    with open(cmd_args.architecture_config, "r") as af, \
-            open(cmd_args.learning_config, "r") as lf:
+    with open(cmd_args.learning_config, "r") as lf:
         trainer = Trainer(
-            net_arch_config=json.load(af),
+            net_factory_function_path=cmd_args.net_factory_function_impl,
             learning_config=LearningConfig.from_dict(json.load(lf))
         )
     trainer.run()
