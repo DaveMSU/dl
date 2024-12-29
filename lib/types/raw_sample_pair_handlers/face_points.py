@@ -57,7 +57,7 @@ class FaceAndPoints(BaseRawModelInputOutputPairSample):
             output=cls.Points(**raw_points)
         )
 
-    def weld_itself(self) -> ModelInputOutputPairSample:
+    def wrangle_itself(self) -> ModelInputOutputPairSample:
         return ModelInputOutputPairSample(
             torch.from_numpy(
                 np.array(self.input).astype(np.float32).transpose(2, 0, 1)

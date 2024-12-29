@@ -16,7 +16,7 @@ NUMPY_SEED = 7  # TODO; thing about to create separate dir for such vars
 
 
 @dataclasses.dataclass(frozen=True)
-class WelderParams:
+class WranglerParams:
     @dataclasses.dataclass(frozen=True)
     class RawSampleId:
         x: pathlib.Path
@@ -35,7 +35,7 @@ class WelderParams:
     dump_path: pathlib.PosixPath
 
     @classmethod
-    def from_dict(cls, d: tp.Dict[str, tp.Any]) -> 'WelderParams':
+    def from_dict(cls, d: tp.Dict[str, tp.Any]) -> 'WranglerParams':
         return cls(
             raw_x_to_raw_y_mapper=[
                 cls.RawSampleId(
@@ -59,9 +59,9 @@ class WelderParams:
         )
 
 
-class Welder:
-    def __init__(self, params: WelderParams):
-        self._sample_ids: tp.List[WelderParams.RawSampleId] = list(
+class Wrangler:
+    def __init__(self, params: WranglerParams):
+        self._sample_ids: tp.List[WranglerParams.RawSampleId] = list(
             filter(params.inclusion_condition, params.raw_x_to_raw_y_mapper)
         )
 
@@ -83,24 +83,24 @@ class Welder:
 
     def run(self) -> None:
         with h5py.File(pathlib.Path(self._dump_path), "w") as g:
-            _welded_sample = self._get_welded_raw_sample(0)
-            X_shape_sample: np.Tuple[int, ...] = _welded_sample.input.shape
-            Y_shape_sample: np.Tuple[int, ...] = _welded_sample.output.shape
+            _wrangled_sample = self._get_wrangled_raw_sample(0)
+            X_shape_sample: np.Tuple[int, ...] = _wrangled_sample.input.shape
+            Y_shape_sample: np.Tuple[int, ...] = _wrangled_sample.output.shape
             hdf5_ds_in = g.create_dataset(
                 "input",
                 (self._total_number_of_samples, *X_shape_sample),
-                dtype=_welded_sample.input.numpy().dtype
+                dtype=_wrangled_sample.input.numpy().dtype
             )  # TODO: fix it
             hdf5_ds_out = g.create_dataset(
                 "output",
                 (self._total_number_of_samples, *Y_shape_sample),
-                dtype=_welded_sample.output.numpy().dtype
+                dtype=_wrangled_sample.output.numpy().dtype
             )  # TODO: fix it
             outer_i: int = 0
             for lap in range(self._repeat_number):
                 for inner_i in range(len(self._sample_ids)):  # TODO: speedup?
                     assert outer_i == len(self._sample_ids) * lap + inner_i
-                    sample = self._get_welded_raw_sample(inner_i)
+                    sample = self._get_wrangled_raw_sample(inner_i)
                     for first_shape, cur_field in [
                           [X_shape_sample, "input"],
                           [Y_shape_sample, "output"]
@@ -111,7 +111,7 @@ class Welder:
                                 f" (`{cur_field}`) is"
                                 f" `{getattr(sample, cur_field).shape}`"
                                 f" while the first one's is `{first_shape}`,"
-                                " so you have to provide the dataset welding"
+                                " so you have to provide the dataset wrangleing"
                                 " with a corresponding transform at least"
                             )
                     else:
@@ -128,11 +128,11 @@ class Welder:
     def _total_number_of_samples(self):
         return len(self._sample_ids) * self._repeat_number
 
-    def _get_welded_raw_sample(self, index: int) -> ModelInputOutputPairSample:
+    def _get_wrangled_raw_sample(self, index: int) -> ModelInputOutputPairSample:
         raw_sample = self._raw_sample_factory(
             input_path=self._sample_ids[index].x,
             output_path=self._sample_ids[index].y
         )
         for current_transform in self._transforms:
             current_transform(raw_sample)
-        return raw_sample.weld_itself()
+        return raw_sample.wrangle_itself()

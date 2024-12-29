@@ -1,3 +1,4 @@
+import io
 import json
 import pathlib
 
@@ -6,7 +7,7 @@ import torch
 from PIL import Image
 
 from .base import BaseRawModelInputOutputPairSample
-from lib import ModelInputOutputPairSample
+from ..commons import ModelInputOutputPairSample
 
 
 # TODO: use meta-class?
@@ -14,18 +15,16 @@ class ImageAndLabel(BaseRawModelInputOutputPairSample):
     @classmethod
     def create_instance(
             cls,
-            input_path: pathlib.Path,
-            output_path: pathlib.Path
-    ) -> 'BaseRawModelInputOutputPairSample':
-        with open(output_path, "r") as f:
-            label: str = json.load(f)["label_of_the_class"]
-        assert type(label) is str
+            input_: np.typing.NDArray[np.uint8],  # binary data
+            output_: str  # label
+    ) -> 'ImageAndLabel':
+        assert type(output_) is str
         return cls(
-            input=Image.open(input_path).convert('RGB'),
-            output=label
+            input=Image.open(io.BytesIO(input_)).convert('RGB'),
+            output=output_
         )
 
-    def weld_itself(self) -> ModelInputOutputPairSample:
+    def wrangle_itself(self) -> ModelInputOutputPairSample:
         assert type(self.output) is np.ndarray, type(self.output)
         assert (self.output.ndim == 1) and (self.output.shape[0] > 1)
         assert self.output.dtype == np.float32
