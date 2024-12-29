@@ -1,7 +1,6 @@
 import importlib.util
 import pathlib
 import sys
-import typing as tp
 
 import torch
 

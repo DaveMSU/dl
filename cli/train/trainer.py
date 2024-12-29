@@ -1,5 +1,4 @@
 import pathlib
-import typing as tp
 
 import torch
 from torch.utils.tensorboard import SummaryWriter
