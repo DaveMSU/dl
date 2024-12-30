@@ -2,10 +2,11 @@ import typing as tp
 
 import torchvision
 
-from .. import raw_sample_pair_handlers
+from .base import BaseRawModelInputOutputTransform
+from lib.types import RawModelInputOutputPairSample
 
 
-class ModelInputBuiltInTransformApplier:  # TODO: inherit from an interface
+class InputBuiltInTransformApplier(BaseRawModelInputOutputTransform):
     def __init__(self, transform_type: str, params: tp.Dict[str, tp.Any]):
         self._transform = getattr(
             torchvision.transforms,
@@ -14,8 +15,5 @@ class ModelInputBuiltInTransformApplier:  # TODO: inherit from an interface
             **params
         )
 
-    def __call__(
-            self,
-            sample: raw_sample_pair_handlers.BaseRawModelInputOutputPairSample
-    ) -> None:
+    def __call__(self, sample: RawModelInputOutputPairSample) -> None:
         sample.input = self._transform(sample.input)

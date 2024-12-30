@@ -4,20 +4,18 @@ import typing as tp
 import dataclasses
 from PIL import Image
 
-from .. import raw_sample_pair_handlers
+from .base import BaseRawModelInputOutputTransform
+from lib.types import RawModelInputOutputPairSample
 
 
-class FaceAndPointsResize:
+class FaceAndPointsResize(BaseRawModelInputOutputTransform):
     def __init__(self, size: tp.List[int]):
         assert len(size) == 2
         assert type(size[0]) is int
         assert type(size[1]) is int
         self._new_size: tp.Tuple[int, int] = tuple(size)
 
-    def __call__(
-            self,
-            sample: raw_sample_pair_handlers.FaceAndPoints
-    ) -> None:
+    def __call__(self, sample: RawModelInputOutputPairSample) -> None:
         old_size: tp.Tuple[int, int]
         old_size, sample.input = sample.input.size, sample.input.resize(
             self._new_size,
@@ -34,7 +32,7 @@ class FaceAndPointsResize:
             )
 
 
-class FaceAndPointsHorizontalRandomFlip:
+class FaceAndPointsHorizontalRandomFlip(BaseRawModelInputOutputTransform):
     def __init__(self, probability: float):
         if 0.0 <= probability <= 1.0:
             self._p = probability
@@ -44,10 +42,7 @@ class FaceAndPointsHorizontalRandomFlip:
                 " but `{probability}` has been got"
             )
 
-    def __call__(
-            self,
-            sample: raw_sample_pair_handlers.FaceAndPoints
-    ) -> None:
+    def __call__(self, sample: RawModelInputOutputPairSample) -> None:
         if (self._p == 1.0) or (random.random() < self._p):
             sample.input = sample.input.transpose(Image.FLIP_LEFT_RIGHT)
             sample.output = raw_sample_pair_handlers.FaceAndPoints.Points(
@@ -68,11 +63,8 @@ class FaceAndPointsHorizontalRandomFlip:
             )
 
 
-class FaceAndPointsMakeAbsolutePointCoordsRelative:
-    def __call__(
-            self,
-            sample: raw_sample_pair_handlers.FaceAndPoints
-    ) -> None:
+class FaceAndPointsMakeAbsolutePointCoordsRelative(BaseRawModelInputOutputTransform):  # noqa: E501
+    def __call__(self, sample: RawModelInputOutputPairSample) -> None:
         for field in dataclasses.fields(sample.output):
             coord: float = getattr(sample.output, field.name)
             setattr(

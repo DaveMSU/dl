@@ -25,7 +25,7 @@ def wrangle_dataset_add_cmdargs(
         type=str,
         help=(
             "POSIX path to the json file that specifies a behaviour of"
-            " wrangleing of the datasets, the config is expected to be like:"
+            " wrangling of the datasets, the config is expected to be like:"
             "{"
             "    'datasets': ["
             "        {"
