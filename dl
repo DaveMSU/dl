@@ -6,9 +6,10 @@ import pathlib, sys; sys.path.append(  # noqa: E401, E702
 import argparse
 import logging  # TODO: move it somewhere deeper
 
+from cli.split import split_add_cmdargs
 from cli.tensorboard import tensorboard_add_cmdargs
 from cli.train import train_add_cmdargs
-from cli.weld_dataset import weld_dataset_add_cmdargs
+from cli.wrangle_dataset import wrangle_dataset_add_cmdargs
 
 
 _TRACE_LEVEL = 5
@@ -27,9 +28,10 @@ def main():
     parser.set_defaults(main=(lambda cmdargs: parser.print_help()))
 
     # Add commands.
+    split_add_cmdargs(parser, subparsers)
     tensorboard_add_cmdargs(parser, subparsers)
     train_add_cmdargs(parser, subparsers)
-    weld_dataset_add_cmdargs(parser, subparsers)
+    wrangle_dataset_add_cmdargs(parser, subparsers)
 
     cmd_args: argparse.Namespace = parser.parse_args()
 
