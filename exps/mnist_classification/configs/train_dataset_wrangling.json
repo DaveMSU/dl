@@ -1,0 +1,64 @@
+{
+    "src_dataset_path": "/var/lib/storage/data/benchmarks/computer_vision/mnist/wrangled/raw_train.h5",
+    "dst_dataset_path": "/var/lib/storage/data/benchmarks/computer_vision/mnist/wrangled/pretransformed_train.h5",
+    "wrangler": {
+        "type": "TransformsApplier",
+        "params": {
+            "transforms": [
+                {
+                    "type": "InputOrOutputBytesToImage",
+                    "params": {
+                        "field": "input"
+                    }
+                },
+                {
+                    "type": "InputOrOutputImageToNDArray",
+                    "params": {
+                        "field": "input",
+                        "dtype": "float32"
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayTranspose",
+                    "params": {
+                        "field": "input",
+                        "args": [2, 0, 1]
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayNormalize",
+                    "params": {
+                        "field": "input",
+                        "bias": 0.0,
+                        "scale": 0.00392156862745098
+                    }
+                },
+                {
+                    "type": "InputOrOutputStrToInt",
+                    "params": {
+                        "field": "output",
+                        "mapper": {
+                            "0": 0,
+                            "1": 1,
+                            "2": 2,
+                            "3": 3,
+                            "4": 4,
+                            "5": 5,
+                            "6": 6,
+                            "7": 7,
+                            "8": 8,
+                            "9": 9
+                        }
+                    }
+                },
+                {
+                    "type": "InputOrOutputIntToOneHot",
+                    "params": {
+                        "field": "output",
+                        "amount_of_classes": 10
+                    }
+                }
+            ]
+        }
+    }
+}

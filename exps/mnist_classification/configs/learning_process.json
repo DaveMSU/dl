@@ -1,16 +1,18 @@
 {
-    "data": {
+    "dataloaders": {
         "train": {
-            "dump_path": "/var/lib/storage/data/benchmarks/computer_vision/mnist/welded/train_dataset.test",
+            "dataset_path": "/var/lib/storage/data/benchmarks/computer_vision/mnist/wrangled/pretransformed_train.h5",
             "batch_size": 4096,
             "shuffle": true,
-            "drop_last": true
+            "drop_last": true,
+            "transforms": []
         },
         "val": {
-            "dump_path": "/var/lib/storage/data/benchmarks/computer_vision/mnist/welded/val_dataset.test",
+            "dataset_path": "/var/lib/storage/data/benchmarks/computer_vision/mnist/wrangled/pretransformed_val.h5",
             "batch_size": 2048,
             "shuffle": false,
-            "drop_last": false
+            "drop_last": false,
+            "transforms": []
         }
     },
     "hyper_params": {
@@ -41,13 +43,6 @@
     "device": "cuda:1",
     "tensorboard_logs": "/var/lib/storage/resources/experiments/other/mnist/test/tensorboard_runs",
     "checkpoint_dir": "/var/lib/storage/resources/experiments/other/mnist/test/checkpoints",
-    "sub_net_outputs_to_visualize": [
-        {
-            "sub_net_name": "backbone",
-            "number_of_vectors": 1,
-            "inclusion_condition": "lambda epoch: (epoch in range(10)) or (epoch in range(100, 105)) or (epoch in range(400, 405)) or (epoch > 995)"
-        }
-    ],
     "metrics": {
         "main": "accuracy",
         "all": [

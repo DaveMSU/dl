@@ -9,10 +9,8 @@ from torch.utils.tensorboard import SummaryWriter
 from .learning_config import UpdationLevel
 from .metric_factory import MetricHandlerContainer, MetricValueContainer
 from .training_context import TrainingContext
-from lib import (
-    LearningMode,
-    wrap_in_logger,
-)
+from lib.logging import wrap_in_logger
+from lib.types import LearningMode
 
 T = tp.TypeVar('T', float, np.ndarray)
 

@@ -1,16 +1,259 @@
 {
-    "data": {
+    "dataloaders": {
         "train": {
-            "dump_path": "/var/lib/storage/data/cv_fall_2022/lesson_7_transfer_learning/welded/train_dataset.test",
+            "dataset_path": "/var/lib/storage/data/cv_fall_2022/lesson_7_transfer_learning/wrangled/raw_train.h5",
             "batch_size": 128,
             "shuffle": true,
-            "drop_last": true
+            "drop_last": true,
+            "transforms": [
+                {
+                    "type": "InputOrOutputBytesToImage",
+                    "params": {
+                        "field": "input"
+                    }
+                },
+                {
+                    "type": "InputOrOutputBuiltInTransformApplier",
+                    "params": {
+                        "field": "input",
+                        "transform_type": "Resize",
+                        "params": {
+                            "size": [215, 215]
+                        }
+                    }
+                },
+                {
+                    "type": "InputOrOutputBuiltInTransformApplier",
+                    "params": {
+                        "field": "input",
+                        "transform_type": "RandomCrop",
+                        "params": {
+                            "size": [200, 200]
+                        }
+                    }
+                },
+                {
+                    "type": "InputOrOutputBuiltInTransformApplier",
+                    "params": {
+                        "field": "input",
+                        "transform_type": "ColorJitter",
+                        "params": {
+                            "brightness": 0.2,
+                            "contrast": 0.2,
+                            "saturation": 0.2,
+                            "hue": 0.05
+                        }
+                    }
+                },
+                {
+                    "type": "InputOrOutputBuiltInTransformApplier",
+                    "params": {
+                        "field": "input",
+                        "transform_type": "RandomHorizontalFlip",
+                        "params": {
+                            "p": 0.5
+                        }
+                    }
+                },
+                {
+                    "type": "InputOrOutputImageToNDArray",
+                    "params": {
+                        "field": "input",
+                        "dtype": "float32"
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayTranspose",
+                    "params": {
+                        "field": "input",
+                        "args": [2, 0, 1]
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayNormalize",
+                    "params": {
+                        "field": "input",
+                        "bias": 0.0,
+                        "scale": 0.00392156862745098
+                    }
+                },
+                {
+                    "type": "InputOrOutputStrToInt",
+                    "params": {
+                        "field": "output",
+                        "mapper": {
+                            "0": 0,
+                            "1": 1,
+                            "2": 2,
+                            "3": 3,
+                            "4": 4,
+                            "5": 5,
+                            "6": 6,
+                            "7": 7,
+                            "8": 8,
+                            "9": 9,
+                            "10": 10,
+                            "11": 11,
+                            "12": 12,
+                            "13": 13,
+                            "14": 14,
+                            "15": 15,
+                            "16": 16,
+                            "17": 17,
+                            "18": 18,
+                            "19": 19,
+                            "20": 20,
+                            "21": 21,
+                            "22": 22,
+                            "23": 23,
+                            "24": 24,
+                            "25": 25,
+                            "26": 26,
+                            "27": 27,
+                            "28": 28,
+                            "29": 29,
+                            "30": 30,
+                            "31": 31,
+                            "32": 32,
+                            "33": 33,
+                            "34": 34,
+                            "35": 35,
+                            "36": 36,
+                            "37": 37,
+                            "38": 38,
+                            "39": 39,
+                            "40": 40,
+                            "41": 41,
+                            "42": 42,
+                            "43": 43,
+                            "44": 44,
+                            "45": 45,
+                            "46": 46,
+                            "47": 47,
+                            "48": 48,
+                            "49": 49
+                        }
+                    }
+                },
+                {
+                    "type": "InputOrOutputIntToOneHot",
+                    "params": {
+                        "field": "output",
+                        "amount_of_classes": 50
+                    }
+                }
+            ]
         },
         "val": {
-            "dump_path": "/var/lib/storage/data/cv_fall_2022/lesson_7_transfer_learning/welded/val_dataset.test",
+            "dataset_path": "/var/lib/storage/data/cv_fall_2022/lesson_7_transfer_learning/wrangled/raw_val.h5",
             "batch_size": 125,
             "shuffle": false,
-            "drop_last": false
+            "drop_last": false,
+            "transforms": [
+                {
+                    "type": "InputOrOutputBytesToImage",
+                    "params": {
+                        "field": "input"
+                    }
+                },
+                {
+                    "type": "InputOrOutputBuiltInTransformApplier",
+                    "params": {
+                        "field": "input",
+                        "transform_type": "Resize",
+                        "params": {
+                            "size": [200, 200]
+                        }
+                    }
+                },
+                {
+                    "type": "InputOrOutputImageToNDArray",
+                    "params": {
+                        "field": "input",
+                        "dtype": "float32"
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayTranspose",
+                    "params": {
+                        "field": "input",
+                        "args": [2, 0, 1]
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayNormalize",
+                    "params": {
+                        "field": "input",
+                        "bias": 0.0,
+                        "scale": 0.00392156862745098
+                    }
+                },
+                {
+                    "type": "InputOrOutputStrToInt",
+                    "params": {
+                        "field": "output",
+                        "mapper": {
+                            "0": 0,
+                            "1": 1,
+                            "2": 2,
+                            "3": 3,
+                            "4": 4,
+                            "5": 5,
+                            "6": 6,
+                            "7": 7,
+                            "8": 8,
+                            "9": 9,
+                            "10": 10,
+                            "11": 11,
+                            "12": 12,
+                            "13": 13,
+                            "14": 14,
+                            "15": 15,
+                            "16": 16,
+                            "17": 17,
+                            "18": 18,
+                            "19": 19,
+                            "20": 20,
+                            "21": 21,
+                            "22": 22,
+                            "23": 23,
+                            "24": 24,
+                            "25": 25,
+                            "26": 26,
+                            "27": 27,
+                            "28": 28,
+                            "29": 29,
+                            "30": 30,
+                            "31": 31,
+                            "32": 32,
+                            "33": 33,
+                            "34": 34,
+                            "35": 35,
+                            "36": 36,
+                            "37": 37,
+                            "38": 38,
+                            "39": 39,
+                            "40": 40,
+                            "41": 41,
+                            "42": 42,
+                            "43": 43,
+                            "44": 44,
+                            "45": 45,
+                            "46": 46,
+                            "47": 47,
+                            "48": 48,
+                            "49": 49
+                        }
+                    }
+                },
+                {
+                    "type": "InputOrOutputIntToOneHot",
+                    "params": {
+                        "field": "output",
+                        "amount_of_classes": 50
+                    }
+                }
+            ]
         }
     },
     "hyper_params": {
@@ -21,7 +264,7 @@
         "optimizer": {
             "type": "SGD",
             "params": {
-                "lr": 0.3
+                "lr": 0.15
             }
         },
         "lr_scheduler": {
@@ -31,18 +274,11 @@
                 "lr_lambda": "lambda gs: 1.0 / (1.0 + 0.0 * gs)"
             }
         },
-        "total_epoch_amount": 1000
+        "total_epoch_amount": 2000
     },
     "device": "cuda:0",
     "tensorboard_logs": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_7_transfer_learning/test/tensorboard_runs",
     "checkpoint_dir": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_7_transfer_learning/test/checkpoints",
-    "sub_net_outputs_to_visualize": [
-        {
-            "sub_net_name": "backbone",
-            "number_of_vectors": 1,
-            "inclusion_condition": "lambda epoch: (epoch in range(10)) or (epoch in range(100, 105)) or (epoch in range(400, 405)) or (epoch > 995)"
-        }
-    ],
     "metrics": {
         "main": "accuracy",
         "all": [

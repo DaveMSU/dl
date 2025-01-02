@@ -1,8 +1,15 @@
 # dl - is the only entrance for all manipulation with deep learning processes.
 
-### weld_dataset: creats welded torch.Tensor in binary format (hdf5) that is ready for DataLoaders, example:
+### split: for splitting dataset for train/test f.e., examples:
 ```
-./dl weld_dataset --config ./exps/lesson_6_nn_intro/configs/dataset_welding.json
+* ./dl split --src /var/lib/storage/data/benchmarks/computer_vision/mnist/raw.h5 --dst0 /var/lib/storage/data/benchmarks/computer_vision/mnist/wrangled/raw_train.h5 --dst1 /var/lib/storage/data/benchmarks/computer_vision/mnist/wrangled/raw_val.h5 -th 0.95 -m random
+* ./dl split --src /var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/raw_labeled.h5 --dst0 /var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/wrangled/raw_train.h5 --dst1 /var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/wrangled/raw_val.h5 -th 0.9 -m dummy
+```
+
+### weld_dataset: creats welded torch.Tensor in binary format (hdf5) that is ready for DataLoaders, examples:
+```
+* ./dl wrangle_dataset --config ./exps/mnist_classification/configs/train_dataset_wrangling.json
+* ./dl wrangle_dataset --config ./exps/mnist_classification/configs/val_dataset_wrangling.json
 ```
 
 ### train: starts learning process, examples:
