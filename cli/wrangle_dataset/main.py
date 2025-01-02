@@ -1,10 +1,9 @@
 import argparse
 import json
 
-from .dataset import (
-    Wrangler,
-    WranglerParams
-)
+from .impl.wrangler_factory import wrangler_factory
+from .impl.wranglers import BaseWrangler
+from .impl.wrangling_config import WranglingConfig
 
 
 def wrangle_dataset_add_cmdargs(
@@ -13,9 +12,7 @@ def wrangle_dataset_add_cmdargs(
 ) -> None:
     p = subparsers.add_parser(
         "wrangle_dataset",
-        help=(
-            "Creates corresponding torch datasets (at least 1)."
-        )
+        help="Takes raw h5 dataset and make it more prepared for dataloader"
     )
     p.set_defaults(main=wrangle_dataset_main)
 
@@ -26,24 +23,7 @@ def wrangle_dataset_add_cmdargs(
         help=(
             "POSIX path to the json file that specifies a behaviour of"
             " wrangling of the datasets, the config is expected to be like:"
-            "{"
-            "    'datasets': ["
-            "        {"
-            "            'raw_x_to_raw_y_mapper': str,"
-            "            'inclusion_condition': str,"
-            "            'raw_model_input_output_pair_sample_type': str,"
-            "            'transforms': ["
-            "                {"
-            "                    'type': str,"
-            "                    'params': tp.Dict[str, tp.Any]"
-            "                },"
-            "                ..."
-            "            ],"
-            "            'repeat_number': int,"
-            "            'dump_path': str"
-            "        },"
-            "        ..."
-            "    ]"
+            "{"  # TODO: write it
             "}"
         )
     )
@@ -51,5 +31,10 @@ def wrangle_dataset_add_cmdargs(
 
 def wrangle_dataset_main(cmd_args: argparse.Namespace) -> None:
     with open(cmd_args.config, "r") as f:
-        for dataset_params in json.load(f)["datasets"]:
-            Wrangler(WranglerParams.from_dict(dataset_params)).run()
+        wrangling_config = WranglingConfig.from_dict(json.load(f))
+        wrangler: BaseWrangler = wrangler_factory(
+            wrangling_config.src_dataset_path,
+            wrangling_config.dst_dataset_path,
+            wrangling_config.wrangler_config
+        )
+        wrangler.run()

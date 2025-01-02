@@ -7,10 +7,9 @@ from torch.utils.tensorboard import SummaryWriter
 from .dataset import HDF5Dataset
 from .learning_config import LearningConfig, UpdationLevel
 from .net_factory import NetFactory
-from lib import (
-    LearningMode,
-    wrap_in_logger,
-)
+from lib.logging import wrap_in_logger
+from lib.sample_transforms.factory import transform_factory
+from lib.types import LearningMode
 
 
 class _LRSchedulerWrapper:
@@ -140,16 +139,21 @@ class TrainingContext:  # TODO: deal with _attrs
                 torch.utils.data.DataLoader
         ] = dict()
         for mode in LearningMode:
+            dataloader_config = getattr(
+                learning_config.dataloaders,
+                mode.value
+            )
             self._dataloaders[mode] = torch.utils.data.DataLoader(
                 HDF5Dataset(
-                    getattr(learning_config.data, mode.value).dump_path
+                    hdf5_file_path=dataloader_config.dataset_path,
+                    transforms=tuple(
+                        transform_factory(transform_config)
+                        for transform_config in dataloader_config.transforms
+                    )
                 ),
-                batch_size=getattr(
-                    learning_config.data,
-                    mode.value
-                ).batch_size,
-                shuffle=getattr(learning_config.data, mode.value).shuffle,
-                drop_last=getattr(learning_config.data, mode.value).drop_last
+                batch_size=dataloader_config.batch_size,
+                shuffle=dataloader_config.shuffle,
+                drop_last=dataloader_config.drop_last
             )
 
     @wrap_in_logger(level="debug", ignore_args=(0,))

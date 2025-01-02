@@ -1,27 +1,40 @@
 import h5py
 import pathlib
+import typing as tp
 
 import torch
 
-from lib import ModelInputOutputPairSample
+from lib.sample_transforms.transforms import BaseRawModelInputOutputTransform
+from lib.types import (
+    ModelInputOutputPairSample,
+    RawModelInputOutputPairSample,
+)
 
 
 class HDF5Dataset(torch.utils.data.Dataset):
-    def __init__(self, hdf5_file_path: pathlib.Path):
+    def __init__(
+            self,
+            hdf5_file_path: pathlib.PosixPath,
+            transforms: tp.Tuple[BaseRawModelInputOutputTransform]
+     ):
+        self._transforms = transforms
         self._hdf5_file = h5py.File(hdf5_file_path, "r")
-        self._hdf5_ds_in = self._hdf5_file["input"]
-        self._hdf5_ds_out = self._hdf5_file["output"]
+        self._hdf5_ds_input = self._hdf5_file["input"]
+        self._hdf5_ds_output = self._hdf5_file["output"]
 
     def __len__(self):
-        assert len(self._hdf5_ds_in) == len(self._hdf5_ds_out)
-        return len(self._hdf5_ds_in)
+        assert len(self._hdf5_ds_input) == len(self._hdf5_ds_output)
+        return len(self._hdf5_ds_input)
 
-    def __getitem__(self, index: int) -> ModelInputOutputPairSample:
-        sample = ModelInputOutputPairSample(
-            torch.as_tensor(self._hdf5_ds_in[index]).cpu(),
-            torch.as_tensor(self._hdf5_ds_out[index]).cpu()
+    # def __getitem__(self, index: int) -> ModelInputOutputPairSample:
+    def __getitem__(self, index: int) -> tp.Tuple[torch.Tensor, torch.Tensor]:
+        sample = RawModelInputOutputPairSample(
+            self._hdf5_ds_input[index],
+            self._hdf5_ds_output[index]
         )
-        # TODO: think about using custom Dataloader as well
+        for transform in self._transforms:
+            transform(sample)
+        sample = sample.finalize()
         return sample.input, sample.output
 
     def __del__(self):

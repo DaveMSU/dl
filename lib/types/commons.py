@@ -3,6 +3,7 @@ import dataclasses
 import enum
 import typing as tp
 
+import numpy as np
 import torch
 
 
@@ -12,34 +13,51 @@ class LearningMode(enum.Enum):
     VAL = "val"
 
 
-@dataclasses.dataclass
 class _InputOutputInterface(abc.ABC):
-    input: tp.Any  # input for a model
-    output: tp.Optional[tp.Any]  # the expected output
+    def __init__(
+            self,
+            input_: tp.Any,  # input for a model
+            output_: tp.Optional[tp.Any],  # the expected output
+            /
+    ):
+        if self._is_none(input_):
+            raise ValueError("'input' field isn't optional!")
+        else:
+            self.input = input_
+        if self._is_none(output_):
+            self.output = None
+        else:
+            self.output = output_
+
+    @staticmethod
+    def _is_none(obj: tp.Any) -> bool:
+        is_nan: bool
+        try:
+            is_nan = bool(np.isnan(obj))
+        except:
+            is_nan = False
+        return is_nan or (obj is None)
 
 
 class ModelInputOutputPairSample(_InputOutputInterface):
-    def __init__(self, input_, output_, /):
-        self._input, self._output = input_, output_
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        object.__setattr__(self, "_frozen", True)
         self._validate_types()
 
-    @property
-    def input(self) -> tp.Any:
-        return self._input
-
-    @property
-    def output(self) -> tp.Optional[tp.Any]:
-        return self._output
+    def __setattr__(self, field: str, value: tp.Any) -> tp.Any:
+        if getattr(self, "_frozen", False):
+            raise AttributeError("Can't modify immutable instance")
+        super().__setattr__(field, value)
 
     def _validate_types(self):
         assert type(self.input) is torch.Tensor
         assert (self.output is None) or (type(self.output) is torch.Tensor)
 
 
-@dataclasses.dataclass  # note that it's mutable!
 class RawModelInputOutputPairSample(_InputOutputInterface):
     def finalize(self) -> ModelInputOutputPairSample:
         return ModelInputOutputPairSample(
             torch.from_numpy(self.input),
-            torch.from_numpy(self.output),
+            None if self.output is None else torch.from_numpy(self.output),
         )

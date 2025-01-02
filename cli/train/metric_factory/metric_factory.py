@@ -5,7 +5,7 @@ import sklearn.metrics
 
 from . import additional_metrics, transforms
 from ..learning_config import OneMetricConfig
-from lib import wrap_in_logger
+from lib.logging import wrap_in_logger
 
 
 class ScikitLearnMetricHandler:

@@ -19,6 +19,7 @@ def _trace(self, message, *args, **kwargs):  # noqa: E302
     if self.isEnabledFor(_TRACE_LEVEL):
         self._log(_TRACE_LEVEL, message, args if args else None, **kwargs)
 logging.Logger.trace = _trace  # noqa: E305
+logging.getLogger('PIL').setLevel(logging.INFO)
 
 
 def main():

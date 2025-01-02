@@ -1,14 +1,44 @@
+import dataclasses
 import random
 import typing as tp
 
-import dataclasses
+import numpy as np
 from PIL import Image
 
 from .base import BaseRawModelInputOutputTransform
-from lib.types import RawModelInputOutputPairSample
+from lib.types import FacePoints, Ratio, RawModelInputOutputPairSample
 
 
-class FaceAndPointsResize(BaseRawModelInputOutputTransform):
+class OutputDictToFacePoints(BaseRawModelInputOutputTransform):
+    def __call__(self, sample: RawModelInputOutputPairSample) -> None:
+        sample.output = FacePoints(**sample.output)
+
+
+class FacePointsToNDArray(BaseRawModelInputOutputTransform):
+    def __init__(self, dtype: str):
+        if (not dtype.startswith('_')) and (dtype in dir(np)):
+            self._dtype = dtype
+        else:
+            raise ValueError(
+                f"Something is wrong with the provided dtype, got `{dtype}`"
+            )
+
+    def __call__(self, sample: RawModelInputOutputPairSample) -> None:
+        sample.output = np.array(
+            [
+                getattr(sample.output, k) for k in [
+                    "x1", "y1", "x2", "y2", "x3", "y3", "x4", "y4",
+                    "x5", "y5", "x6", "y6", "x7", "y7", "x8", "y8",
+                    "x9", "y9",
+                    "x10", "y10", "x11", "y11", "x12", "y12",
+                    "x13", "y13", "x14", "y14"
+                ]
+            ],
+            dtype=self._dtype
+        )
+
+
+class FaceAndAbsPointsResize(BaseRawModelInputOutputTransform):
     def __init__(self, size: tp.List[int]):
         assert len(size) == 2
         assert type(size[0]) is int
@@ -32,20 +62,14 @@ class FaceAndPointsResize(BaseRawModelInputOutputTransform):
             )
 
 
-class FaceAndPointsHorizontalRandomFlip(BaseRawModelInputOutputTransform):
+class FaceAndAbsPointsHorizontalRandomFlip(BaseRawModelInputOutputTransform):
     def __init__(self, probability: float):
-        if 0.0 <= probability <= 1.0:
-            self._p = probability
-        else:
-            raise ValueError(
-                "The probability value has to be between 0.0 and 1.0,"
-                " but `{probability}` has been got"
-            )
+        self._p = Ratio(probability)
 
     def __call__(self, sample: RawModelInputOutputPairSample) -> None:
-        if (self._p == 1.0) or (random.random() < self._p):
+        if (random.random() < self._p) or (self._p == 1.0):
             sample.input = sample.input.transpose(Image.FLIP_LEFT_RIGHT)
-            sample.output = raw_sample_pair_handlers.FaceAndPoints.Points(
+            sample.output = FacePoints(
                 x1=sample.input.width - sample.output.x4, y1=sample.output.y4,
                 x2=sample.input.width - sample.output.x3, y2=sample.output.y3,
                 x3=sample.input.width - sample.output.x2, y3=sample.output.y2,
@@ -63,7 +87,7 @@ class FaceAndPointsHorizontalRandomFlip(BaseRawModelInputOutputTransform):
             )
 
 
-class FaceAndPointsMakeAbsolutePointCoordsRelative(BaseRawModelInputOutputTransform):  # noqa: E501
+class MakeAbsolutePointCoordsRelative(BaseRawModelInputOutputTransform):  # noqa: E501
     def __call__(self, sample: RawModelInputOutputPairSample) -> None:
         for field in dataclasses.fields(sample.output):
             coord: float = getattr(sample.output, field.name)
