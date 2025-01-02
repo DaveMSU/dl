@@ -26,7 +26,6 @@ class HDF5Dataset(torch.utils.data.Dataset):
         assert len(self._hdf5_ds_input) == len(self._hdf5_ds_output)
         return len(self._hdf5_ds_input)
 
-    # def __getitem__(self, index: int) -> ModelInputOutputPairSample:
     def __getitem__(self, index: int) -> tp.Tuple[torch.Tensor, torch.Tensor]:
         sample = RawModelInputOutputPairSample(
             self._hdf5_ds_input[index],
@@ -34,7 +33,7 @@ class HDF5Dataset(torch.utils.data.Dataset):
         )
         for transform in self._transforms:
             transform(sample)
-        sample = sample.finalize()
+        sample: ModelInputOutputPairSample = sample.finalize()
         return sample.input, sample.output
 
     def __del__(self):

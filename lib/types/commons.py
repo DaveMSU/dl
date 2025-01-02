@@ -1,5 +1,4 @@
 import abc
-import dataclasses
 import enum
 import typing as tp
 
@@ -34,7 +33,7 @@ class _InputOutputInterface(abc.ABC):
         is_nan: bool
         try:
             is_nan = bool(np.isnan(obj))
-        except:
+        except BaseException:
             is_nan = False
         return is_nan or (obj is None)
 

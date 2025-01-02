@@ -1,8 +1,6 @@
 import typing as tp
 
-import numpy as np
-
-from .base import BaseRawModelInputOutputTransform, BaseInputOrOutputTransform
+from .base import BaseInputOrOutputTransform
 from lib.types import RawModelInputOutputPairSample
 
 

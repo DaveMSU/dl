@@ -1,5 +1,4 @@
 import argparse
-import json
 import pathlib
 
 from .impl.split_mode import SplitMode
@@ -66,7 +65,7 @@ def split_add_cmdargs(
         type=SplitMode,
         help="Choose the enum type of the dataset splitting"
     )
-    
+
 
 def split_main(cmd_args: argparse.Namespace) -> None:
     Splitter(
