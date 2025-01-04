@@ -7,10 +7,8 @@ from .learning_config import LearningConfig, UpdationLevel
 from .metric_factory import MetricHandlerContainer
 from .progress_monitor import ProgressMonitor
 from .training_context import TrainingContext
-from lib import (
-    LearningMode,
-    wrap_in_logger,
-)
+from lib.logging import wrap_in_logger
+from lib.types import LearningMode
 
 
 class Trainer:  # TODO: make it a singleton

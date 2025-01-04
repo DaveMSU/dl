@@ -6,7 +6,7 @@ import numpy as np
 
 from .metric_factory import ScikitLearnMetricHandler
 from ..learning_config import ManyMetricsConfig
-from lib import wrap_in_logger
+from lib.logging import wrap_in_logger
 
 
 @dataclasses.dataclass(frozen=True)
