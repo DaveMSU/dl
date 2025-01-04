@@ -1,7 +1,7 @@
 # dl
 Framework that unifies all manipulations with data and training of a neural network using it.
 
-![Logotype](./wall.jpg)
+![Logotype](./logo.jpg)
 
 ## commands
 * split: for splitting dataset, f.e. into train/test or pretrain/finetune, examples:
