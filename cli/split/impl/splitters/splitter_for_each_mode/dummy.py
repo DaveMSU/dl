@@ -3,7 +3,6 @@ import typing as tp
 import h5py
 
 from .base import BaseSplitter
-from lib.types import Ratio
 
 
 class DummySplitter(BaseSplitter):

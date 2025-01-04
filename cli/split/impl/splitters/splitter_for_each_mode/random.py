@@ -1,11 +1,9 @@
-import pathlib
 import typing as tp
 
 import h5py
 import numpy as np
 
 from .base import BaseSplitter
-from lib.types import Ratio
 
 
 class RandomSplitter(BaseSplitter):
