@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR_PREFIX="/home/david_tyuman/my_github/dl_dev"
+DIR_PREFIX="/home/david_tyuman/my_github/dl"
 cd $DIR_PREFIX || exit 1
 
 

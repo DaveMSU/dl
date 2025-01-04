@@ -152,7 +152,7 @@
         },
         "total_epoch_amount": 2000
     },
-    "device": "cuda:1",
+    "device": "cuda:0",
     "tensorboard_logs": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_6_nn_intro/test/tensorboard_runs",
     "checkpoint_dir": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_6_nn_intro/test/checkpoints",
     "metrics": {
