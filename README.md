@@ -3,7 +3,7 @@ Framework that unifies all manipulations with data and training of a neural netw
 
 ![Logotype](./logo.jpg)
 
-## commands
+## Commands
 * split: for splitting dataset, f.e. into train/test or pretrain/finetune, examples:
 ```
 ./dl split \
@@ -22,6 +22,7 @@ Framework that unifies all manipulations with data and training of a neural netw
     --mode dummy
 ```
 
+
 * wrangle_dataset: processes a raw dataset (hdf5) to make it less raw, f.e. using sample-independent transforms, examples:
 ```
 ./dl wrangle_dataset --config ./exps/mnist_classification/configs/train_dataset_wrangling.json
@@ -29,6 +30,7 @@ Framework that unifies all manipulations with data and training of a neural netw
 ```
 ./dl wrangle_dataset --config ./exps/mnist_classification/configs/val_dataset_wrangling.json
 ```
+
 
 * train: starts learning process, examples:
 ```
@@ -50,12 +52,16 @@ Framework that unifies all manipulations with data and training of a neural netw
     --log-level TRACE
 ```
 
-* tensorboard: creates flask server with tensorboard monitoring on it, the only way to launch it:
-```./dl tensorboard```
 
-## For all raw data like images (png/jpg/...) or labels (csv/txt/...) and welded dataset look into:
+* tensorboard: creates flask server with tensorboard monitoring on it, the only way to launch it:
+```
+./dl tensorboard
+```
+
+
+## All *.h5 files with required schema (input:tp.Any, output:tp.Any) are in the following dir:
 ```/var/lib/storage/data```
 
 
-# For output data like logs, model dumps, etc look into:
+## All output training artifacts like logs, checkpoints, tokenizers,  etc are in the following dir:
 ```/var/lib/storage/resources```
