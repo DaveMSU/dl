@@ -59,12 +59,12 @@ Framework that unifies all manipulations with data and training of a neural netw
 ```
 
 
+(For more examples look into ./exps)
+
+
 ## All *.h5 files with required schema (input:tp.Any, output:tp.Any) are in the following dir:
 ```/var/lib/storage/data```
 
 
 ## All output training artifacts like logs, checkpoints, tokenizers,  etc are in the following dir:
 ```/var/lib/storage/resources```
-
-
-(For more examples look into ./exps)
