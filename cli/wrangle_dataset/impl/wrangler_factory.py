@@ -3,9 +3,7 @@ import pathlib
 from . import wranglers
 from .wrangling_config import WranglerConfig
 from lib.sample_transforms.factory import transform_factory
-from lib.types import (
-    TransformConfig,
-)
+from lib.types import TransformConfig
 
 
 def wrangler_factory(

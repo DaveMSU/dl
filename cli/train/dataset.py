@@ -15,7 +15,7 @@ class HDF5Dataset(torch.utils.data.Dataset):
     def __init__(
             self,
             hdf5_file_path: pathlib.PosixPath,
-            transforms: tp.Tuple[BaseRawModelInputOutputTransform]
+            transforms: tp.Tuple[BaseRawModelInputOutputTransform, ...]
      ):
         self._transforms = transforms
         self._hdf5_file = h5py.File(hdf5_file_path, "r")
@@ -26,7 +26,10 @@ class HDF5Dataset(torch.utils.data.Dataset):
         assert len(self._hdf5_ds_input) == len(self._hdf5_ds_output)
         return len(self._hdf5_ds_input)
 
-    def __getitem__(self, index: int) -> tp.Tuple[torch.Tensor, torch.Tensor]:
+    def __getitem__(self, index: int) -> tp.Tuple[
+            torch.Tensor,
+            tp.Optional[torch.Tensor]
+    ]:
         sample = RawModelInputOutputPairSample(
             self._hdf5_ds_input[index],
             self._hdf5_ds_output[index]

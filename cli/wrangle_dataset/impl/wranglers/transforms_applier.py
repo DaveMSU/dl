@@ -14,7 +14,7 @@ class TransformsApplier(BaseWrangler):
             self,
             src_dataset_path: pathlib.PosixPath,
             dst_dataset_path: pathlib.PosixPath,
-            transforms: tp.Tuple[BaseRawModelInputOutputTransform]
+            transforms: tp.Tuple[BaseRawModelInputOutputTransform, ...]
     ):
         super().__init__(src_dataset_path, dst_dataset_path)
         self._transforms = transforms
@@ -25,21 +25,22 @@ class TransformsApplier(BaseWrangler):
             src_ds_len: int = len(src_ds["input"])
             assert src_ds_len == len(src_ds["output"])
 
-            ref_sample = self._produce_wrangled_sample(src_ds, 0)
-            assert type(ref_sample.input) is np.ndarray  # TODO: use exception
-            assert type(ref_sample.output) is np.ndarray  # TODO: -=-
+            self._ref_sample = self._produce_wrangled_sample(src_ds, 0)
+            self._validate(self._ref_sample)
             with h5py.File(self._dst, "w") as dst_ds:
                 dst_ds_cols: tp.Dict[str, h5py.Dataset] = dict()
                 for col in ["input", "output"]:
                     dst_ds_cols[col] = dst_ds.create_dataset(
                         col,
-                        shape=(src_ds_len, *getattr(ref_sample, col).shape),
-                        dtype=getattr(ref_sample, col).dtype
+                        shape=(
+                            src_ds_len,
+                            *getattr(self._ref_sample, col).shape
+                        ),
+                        dtype=getattr(self._ref_sample, col).dtype
                     )
                 for i in range(src_ds_len):
                     sample = self._produce_wrangled_sample(src_ds, i)
-                    assert ref_sample.input.shape == sample.input.shape
-                    assert ref_sample.output.shape == sample.output.shape
+                    self._validate(sample)
                     for col in ["input", "output"]:
                         dst_ds[col][i] = getattr(sample, col)
                     print(i, end="\r")
@@ -57,3 +58,16 @@ class TransformsApplier(BaseWrangler):
         for transform in self._transforms:
             transform(sample)
         return sample
+
+    def _validate(self, sample: RawModelInputOutputPairSample) -> None:
+        for field in ["input", "output"]:
+            if type(sf := getattr(sample, field)) is not np.ndarray:
+                raise ValueError(
+                    f"`{field}` of the sample must be np.ndarray,"
+                    f" but got `{type(sf)}`"
+                )
+            if (rfs := getattr(self._ref_sample, field).shape) != sf.shape:
+                raise ValueError(
+                    "Shapes of the sample and reference sample mush be equal,"
+                    f" but got `{sf.shape}` and `{rfs}` respectively"
+                )

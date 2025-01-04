@@ -9,8 +9,8 @@ SPLIT_RAW_DATASET="\
     --src /var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/raw_labeled.h5 \
     --dst0 /var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/wrangled/raw_train.h5 \
     --dst1 /var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/wrangled/raw_val.h5 \
-    -th 0.9 \
-    -m random \
+    --th 0.9 \
+    --mode random \
 "
 START_LEARNING="\
 ./dl train \

@@ -12,7 +12,12 @@ def wrangle_dataset_add_cmdargs(
 ) -> None:
     p = subparsers.add_parser(
         "wrangle_dataset",
-        help="Takes raw h5 dataset and make it more prepared for dataloader"
+        help=(
+            "The command is used to prepare an hd5f dataset before allowing"
+            " the dataloader to sample batches from it and apply it's own"
+            " transforms while training, the source hd5f dataset must"
+            " contain only two columns: 'input' and 'output'"
+        )
     )
     p.set_defaults(main=wrangle_dataset_main)
 
@@ -21,9 +26,15 @@ def wrangle_dataset_add_cmdargs(
         required=True,
         type=str,
         help=(
-            "POSIX path to the json file that specifies a behaviour of"
-            " wrangling of the datasets, the config is expected to be like:"
-            "{"  # TODO: write it
+            "POSIX path to the *.json config file that specifies the way of"
+            " how to wrangle the datasets, the config mush be as follows:"
+            "{"
+            "    'src_dataset_path': str,"
+            "    'dst_dataset_path': str,"
+            "    'wrangler': {"
+            "        'type': str,"
+            "        'params': tp.Dict[str, tp.Any]"
+            "    }"
             "}"
         )
     )

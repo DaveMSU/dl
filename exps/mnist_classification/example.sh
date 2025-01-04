@@ -9,8 +9,8 @@ SPLIT_RAW_DATASET="\
     --src /var/lib/storage/data/benchmarks/computer_vision/mnist/raw.h5 \
     --dst0 /var/lib/storage/data/benchmarks/computer_vision/mnist/wrangled/raw_train.h5 \
     --dst1 /var/lib/storage/data/benchmarks/computer_vision/mnist/wrangled/raw_val.h5 \
-    -th 0.95 \
-    -m random
+    --th 0.95 \
+    --mode random
 "
 
 WRANGLE_THE_TRAIN="./dl wrangle_dataset --config ./exps/mnist_classification/configs/train_dataset_wrangling.json"

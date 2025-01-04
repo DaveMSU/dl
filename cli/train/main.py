@@ -27,8 +27,9 @@ def train_add_cmdargs(
         required=True,
         type=pathlib.Path,
         help=(
-            "POSIX path to the .py file that specifies the"
-            " architecture of the future neural network."  # TODO: example
+            "POSIX path to the *.py file, that has only one object -"
+            " function named 'create_a_neural_network_instance', that"
+            " returns torch.nn.Module subclass instance - the neural network"
         )
     )
 
@@ -37,9 +38,9 @@ def train_add_cmdargs(
         required=True,
         type=pathlib.Path,
         help=(
-            "POSIX path to the json file that specifies which checkpoint to"
-            " use for creation of the neural network instance and that"
-            " specifies the way how train it."  # TODO: example
+            "POSIX path to the *.json config file that fully describes the"
+            " learning process. For examples see configs"
+            " ./exps/*/learning_config.json"
         )
     )
 
@@ -47,9 +48,7 @@ def train_add_cmdargs(
         "--log-level",
         default="INFO",
         type=str,
-        help=(
-            "TODO: write me"
-        )
+        help="Logging level, possible options: 'INFO', 'DEBUG', 'TRACE'"
     )
 
 
