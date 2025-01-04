@@ -3,7 +3,7 @@ import typing as tp
 
 import numpy as np
 
-from lib import wrap_in_logger
+from lib.logging import wrap_in_logger
 
 
 Output = tp.TypeVar('T')

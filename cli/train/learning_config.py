@@ -3,19 +3,22 @@ import enum
 import pathlib
 import typing as tp
 
+from lib.types import TransformConfig
+
 
 @dataclasses.dataclass(frozen=True)
-class _DataloaderConfig:  # TODO: add accumulation
-    dump_path: pathlib.Path
+class _OneDataloaderConfig:  # TODO: add accumulation
+    dataset_path: pathlib.PosixPath
     batch_size: int
     shuffle: bool
     drop_last: bool
+    transforms: tp.List[TransformConfig]
 
 
 @dataclasses.dataclass(frozen=True)
-class _DataConfig:
-    train: _DataloaderConfig
-    val: _DataloaderConfig
+class _TrainValDataloadersConfig:
+    train: _OneDataloaderConfig
+    val: _OneDataloaderConfig
 
 
 @dataclasses.dataclass(frozen=True)
@@ -103,29 +106,44 @@ class ManyMetricsConfig:
 
 @dataclasses.dataclass(frozen=True)
 class LearningConfig:
-    data: _DataConfig
+    dataloaders: _TrainValDataloadersConfig
     hyper_params: _HyperParamsConfig
     device: str  # f.e.: "cuda:0"
     tensorboard_logs: pathlib.PosixPath
     checkpoint_dir: pathlib.PosixPath
-    sub_net_outputs_to_visualize: tp.List[_SubNetOutputConfig]
     metrics: ManyMetricsConfig
 
     @classmethod
     def from_dict(cls, d: tp.Dict[str, tp.Any]) -> 'LearningConfig':
         return cls(
-            data=_DataConfig(
-                train=_DataloaderConfig(
-                    dump_path=pathlib.Path(d["data"]["train"]["dump_path"]),
-                    batch_size=d["data"]["train"]["batch_size"],
-                    shuffle=d["data"]["train"]["shuffle"],
-                    drop_last=d["data"]["train"]["drop_last"]
+            dataloaders=_TrainValDataloadersConfig(
+                train=_OneDataloaderConfig(
+                    dataset_path=pathlib.Path(
+                        d["dataloaders"]["train"]["dataset_path"]
+                    ),
+                    batch_size=d["dataloaders"]["train"]["batch_size"],
+                    shuffle=d["dataloaders"]["train"]["shuffle"],
+                    drop_last=d["dataloaders"]["train"]["drop_last"],
+                    transforms=list(
+                        map(
+                            TransformConfig.from_dict,
+                            d["dataloaders"]["train"]["transforms"]
+                        )
+                    )
                 ),
-                val=_DataloaderConfig(
-                    dump_path=pathlib.Path(d["data"]["val"]["dump_path"]),
-                    batch_size=d["data"]["val"]["batch_size"],
-                    shuffle=d["data"]["val"]["shuffle"],
-                    drop_last=d["data"]["val"]["drop_last"]
+                val=_OneDataloaderConfig(
+                    dataset_path=pathlib.Path(
+                        d["dataloaders"]["val"]["dataset_path"]
+                    ),
+                    batch_size=d["dataloaders"]["val"]["batch_size"],
+                    shuffle=d["dataloaders"]["val"]["shuffle"],
+                    drop_last=d["dataloaders"]["val"]["drop_last"],
+                    transforms=list(
+                        map(
+                            TransformConfig.from_dict,
+                            d["dataloaders"]["val"]["transforms"]
+                        )
+                    )
                 )
             ),
             hyper_params=_HyperParamsConfig(
@@ -157,13 +175,6 @@ class LearningConfig:
             device=d["device"],
             tensorboard_logs=pathlib.Path(d["tensorboard_logs"]),
             checkpoint_dir=pathlib.Path(d["checkpoint_dir"]),
-            sub_net_outputs_to_visualize=[
-                _SubNetOutputConfig(
-                    sub_net_name=sub_d["sub_net_name"],
-                    number_of_vectors=sub_d["number_of_vectors"],
-                    inclusion_condition=eval(sub_d["inclusion_condition"])
-                ) for sub_d in d["sub_net_outputs_to_visualize"]
-            ],
             metrics=ManyMetricsConfig(
                 main=d["metrics"]["main"],
                 all=list(map(OneMetricConfig.from_dict, d["metrics"]["all"]))

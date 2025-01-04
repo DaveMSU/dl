@@ -1,16 +1,134 @@
 {
-    "data": {
+    "dataloaders": {
         "train": {
-            "dump_path": "/var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/welded/train_dataset.test",
+            "dataset_path": "/var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/wrangled/raw_train.h5",
             "batch_size": 128,
             "shuffle": true,
-            "drop_last": true
+            "drop_last": true,
+            "transforms": [
+                {
+                    "type": "InputOrOutputBytesToJson",
+                    "params": {
+                        "field": "output"
+                    }
+                },
+                {
+                    "type": "OutputDictToFacePoints",
+                    "params": {}
+                },
+                {
+                    "type": "InputOrOutputBytesToImage",
+                    "params": {
+                        "field": "input"
+                    }
+                },
+                {
+                    "type": "FaceAndAbsPointsResize",
+                    "params": {
+                        "size": [64, 64]
+                    }
+                },
+                {
+                    "type": "FaceAndAbsPointsHorizontalRandomFlip",
+                    "params": {
+                        "probability": 0.5
+                    }
+                },
+                {
+                    "type": "MakeAbsolutePointCoordsRelative",
+                    "params": {}
+                },
+                {
+                    "type": "FacePointsToNDArray",
+                    "params": {
+                        "dtype": "float32"
+                    }
+                },
+                {
+                    "type": "InputOrOutputImageToNDArray",
+                    "params": {
+                        "field": "input",
+                        "dtype": "float32"
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayTranspose",
+                    "params": {
+                        "field": "input",
+                        "args": [2, 0, 1]
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayNormalize",
+                    "params": {
+                        "field": "input",
+                        "bias": 0.0,
+                        "scale": 0.00392156862745098
+                    }
+                }
+            ]
         },
         "val": {
-            "dump_path": "/var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/welded/val_dataset.test",
+            "dataset_path": "/var/lib/storage/data/cv_fall_2022/lesson_6_nn_intro/wrangled/raw_val.h5",
             "batch_size": 64,
             "shuffle": false,
-            "drop_last": false
+            "drop_last": false,
+            "transforms": [
+                {
+                    "type": "InputOrOutputBytesToJson",
+                    "params": {
+                        "field": "output"
+                    }
+                },
+                {
+                    "type": "OutputDictToFacePoints",
+                    "params": {}
+                },
+                {
+                    "type": "InputOrOutputBytesToImage",
+                    "params": {
+                        "field": "input"
+                    }
+                },
+                {
+                    "type": "FaceAndAbsPointsResize",
+                    "params": {
+                        "size": [64, 64]
+                    }
+                },
+                {
+                    "type": "MakeAbsolutePointCoordsRelative",
+                    "params": {}
+                },
+                {
+                    "type": "FacePointsToNDArray",
+                    "params": {
+                        "dtype": "float32"
+                    }
+                },
+                {
+                    "type": "InputOrOutputImageToNDArray",
+                    "params": {
+                        "field": "input",
+                        "dtype": "float32"
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayTranspose",
+                    "params": {
+                        "field": "input",
+                        "args": [2, 0, 1]
+                    }
+                },
+                {
+                    "type": "InputOrOutputNDArrayNormalize",
+                    "params": {
+                        "field": "input",
+                        "bias": 0.0,
+                        "scale": 0.00392156862745098
+                    }
+                }
+            ]
         }
     },
     "hyper_params": {
@@ -37,13 +155,6 @@
     "device": "cuda:0",
     "tensorboard_logs": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_6_nn_intro/test/tensorboard_runs",
     "checkpoint_dir": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_6_nn_intro/test/checkpoints",
-    "sub_net_outputs_to_visualize": [
-        {
-            "sub_net_name": "backbone",
-            "number_of_vectors": 1,
-            "inclusion_condition": "lambda epoch: (epoch in range(10)) or (epoch in range(100, 105)) or (epoch in range(400, 405)) or (epoch > 995)"
-        }
-    ],
     "metrics": {
         "main": "rmse",
         "all": [
