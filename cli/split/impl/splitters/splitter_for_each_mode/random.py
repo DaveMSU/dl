@@ -19,7 +19,12 @@ class RandomSplitter(BaseSplitter):
             }
             dst_ds[0]["len"] = round(src_ds_len * self._th)
             dst_ds[1]["len"] = src_ds_len - dst_ds[0]["len"]
-            indexes: np.types.NDArray[int] = np.random.permutation(src_ds_len)
+            _inds: np.types.NDArray[int] = np.random.permutation(src_ds_len)
+            indexes: tp.Dict[str, np.types.NDArray[int]] = {
+                0: np.sort(_inds[:dst_ds[0]["len"]]),
+                1: np.sort(_inds[dst_ds[0]["len"]:])
+            }
+            del _inds
             with h5py.File(self._dst0, "w") as dst0_ds, \
                     h5py.File(self._dst1, "w") as dst1_ds:
                 for col in ["input", "output"]:
@@ -34,7 +39,7 @@ class RandomSplitter(BaseSplitter):
                         dtype=src_ds[col].dtype
                     )
                 dst0_i: int = 0
-                for src_i in indexes[:dst_ds[0]["len"]]:
+                for src_i in indexes[0]:
                     for col in ["input", "output"]:
                         dst0_ds[col][dst0_i] = src_ds[col][src_i]
                     print(dst0_i, end="\r")
@@ -42,7 +47,7 @@ class RandomSplitter(BaseSplitter):
                 print()
                 assert dst0_i == dst_ds[0]["len"]
                 dst1_i: int = 0
-                for src_i in indexes[dst_ds[0]["len"]:]:
+                for src_i in indexes[1]:
                     for col in ["input", "output"]:
                         dst1_ds[col][dst1_i] = src_ds[col][src_i]
                     print(dst1_i, end="\r")
