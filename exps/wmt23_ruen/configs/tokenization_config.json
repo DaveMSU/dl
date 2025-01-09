@@ -1,0 +1,10 @@
+{
+    "tokenizer_config": {
+        "type": "CharacterTokenizer",
+        "params": {
+            "traing_data_limit": 10000
+        }
+    },
+    "train_dataset_path": "/var/lib/storage/data/benchmarks/machine_translation/wmt/wmt23_ruen/wrangled/raw_train.h5",
+    "save_path": "/home/david_tyuman/my_github/dl_dev/character_tokenizer_dict.json"
+}

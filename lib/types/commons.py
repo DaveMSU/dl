@@ -6,6 +6,19 @@ import numpy as np
 import torch
 
 
+class BaseStrictSingleton(abc.ABC):
+    _instance: tp.Optional['BaseStrictSingleton'] = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is not None:
+            raise RuntimeError(
+                f"Class `{cls.__name__}` may have only 1 instance!"
+            )
+        else:
+            cls._instance: 'BaseStrictSingleton' = super().__new__(cls)
+            return cls._instance
+
+
 @enum.unique
 class LearningMode(enum.Enum):
     TRAIN = "train"
