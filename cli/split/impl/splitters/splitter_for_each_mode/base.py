@@ -1,6 +1,5 @@
 import abc
 import pathlib
-import typing as tp
 
 from lib.types import (
     BaseStrictSingleton,
