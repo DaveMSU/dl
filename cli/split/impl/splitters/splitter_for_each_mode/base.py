@@ -1,22 +1,13 @@
 import abc
 import pathlib
-import typing as tp
 
-from lib.types import Ratio
+from lib.types import (
+    BaseStrictSingleton,
+    Ratio,
+)
 
 
-class BaseSplitter(abc.ABC):
-    _instance: tp.Optional['BaseSplitter'] = None
-
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is not None:
-            raise RuntimeError(
-                f"Class `{cls.__name__}` may have only 1 instance!"
-            )
-        else:
-            cls._instance: 'BaseSplitter' = super().__new__(cls)
-            return cls._instance
-
+class BaseSplitter(BaseStrictSingleton):
     def __init__(
             self,
             src: pathlib.PosixPath,

@@ -21,4 +21,4 @@ def wrangler_factory(
             )
         )
     else:
-        raise TypeError(f"No such class as `{WranglerConfig.type}`")
+        raise TypeError(f"No such class as `{wrangler_config.type}`")
