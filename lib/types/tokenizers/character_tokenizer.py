@@ -14,16 +14,15 @@ _UNICODE_REPLACEMENT_CHARACTER = chr(65533)
 
 
 class CharacterTokenizer(BaseTokenizer):
-    def __init__(self, traing_data_limit: int):
+    def __init__(self, *args, **kwargs):
         super().__init__()
         self._char_to_token: tp.Dict[str, int] = dict()
         self._token_to_char: tp.Dict[int, str] = dict()
-        self._traing_data_limit: int = traing_data_limit
 
     def encode(self, text: str) -> tp.List[int]:
         assert type(text) is str
         return list(
-            map(lambda char: self._char_to_token[char], text)
+            map(lambda char: self._char_to_token.get(char, -1), text)
         )
 
     def decode(self, tokens: tp.Sequence[int]) -> str:
@@ -37,14 +36,14 @@ class CharacterTokenizer(BaseTokenizer):
             )
         )
 
-    def _fit_impl(self, path: pathlib.PosixPath) -> None:
+    def _fit_impl(self, path: pathlib.PosixPath, limit: int) -> None:
         with h5py.File(path, "r") as src_ds:
             assert {name for name in src_ds} == {"input", "output"}
             src_ds_len: int = len(src_ds["input"])
             assert src_ds_len == len(src_ds["output"])
 
             indexes: np.types.NDArray[int] = np.sort(
-                np.random.permutation(src_ds_len)[:self._traing_data_limit]
+                np.random.permutation(src_ds_len)[:limit]
             )
 
             def _char_generator(indx: int):

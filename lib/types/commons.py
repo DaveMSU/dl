@@ -18,6 +18,10 @@ class BaseStrictSingleton(abc.ABC):
             cls._instance: 'BaseStrictSingleton' = super().__new__(cls)
             return cls._instance
 
+    def __del__(self):
+        if self.__class__._instance is self:
+            self.__class__._instance = None
+
 
 @enum.unique
 class LearningMode(enum.Enum):

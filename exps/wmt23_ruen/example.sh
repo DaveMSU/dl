@@ -24,5 +24,9 @@ SPLIT_DEV_RAW_DATASET_TO_TWO_VALS="\
     --mode random
 "
 
+TRAIN_CHAR_TOKENIZER="\
+./dl train_tokenizer --config ./exps/wmt23_ruen/configs/tokenization_config.json
+"
 
-false && $SPLIT_RAW_DATASET_TO_TRAIN_AND_DEV && $SPLIT_DEV_RAW_DATASET_TO_TWO_VALS
+
+false && $SPLIT_RAW_DATASET_TO_TRAIN_AND_DEV && $SPLIT_DEV_RAW_DATASET_TO_TWO_VALS && $TRAIN_CHAR_TOKENIZER

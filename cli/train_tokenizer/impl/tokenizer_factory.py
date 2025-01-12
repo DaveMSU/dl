@@ -7,7 +7,7 @@ def tokenizer_factory(
 ) -> tokenizers.BaseTokenizer:
     if tokenizer_config.type == "CharacterTokenizer":
         return getattr(tokenizers, "CharacterTokenizer")(
-            traing_data_limit=tokenizer_config.params["traing_data_limit"]
+            **tokenizer_config.params  # should be empty dict
         )
     else:
         raise TypeError(f"No such class as `{tokenizer_config.type}`")

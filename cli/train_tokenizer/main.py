@@ -36,5 +36,5 @@ def train_tokenizer_main(cmd_args: argparse.Namespace) -> None:
     with open(cmd_args.config, "r") as f:
         config = TokenizerTrainingConfig.from_dict(json.load(f))
         tokenizer: BaseTokenizer = tokenizer_factory(config.tokenizer_config)
-        tokenizer.fit(config.train_dataset_path)
+        tokenizer.fit(config.train_dataset.path, config.train_dataset.limit)
         tokenizer.save(config.save_path)

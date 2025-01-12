@@ -6,15 +6,24 @@ from lib.types import TokenizerConfig
 
 
 @dataclasses.dataclass(frozen=True)
+class _TrainingDatasetConfig:
+    path: pathlib.PosixPath
+    limit: int
+
+
+@dataclasses.dataclass(frozen=True)
 class TokenizerTrainingConfig:
-    save_path: pathlib.PosixPath
-    train_dataset_path: pathlib.PosixPath
+    train_dataset: _TrainingDatasetConfig
     tokenizer_config: TokenizerConfig
+    save_path: pathlib.PosixPath
 
     @classmethod
     def from_dict(cls, d: tp.Dict[str, tp.Any]) -> 'TokenizerTrainingConfig':
         return cls(
-            save_path=pathlib.Path(d["save_path"]),
-            train_dataset_path=pathlib.Path(d["train_dataset_path"]),
-            tokenizer_config=TokenizerConfig(**d["tokenizer_config"])
+            train_dataset=_TrainingDatasetConfig(
+                path=d["train_dataset"]["path"],
+                limit=d["train_dataset"]["limit"]
+            ),
+            tokenizer_config=TokenizerConfig(**d["tokenizer"]),
+            save_path=pathlib.Path(d["save_path"])
         )
