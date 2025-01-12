@@ -2,7 +2,10 @@ import abc
 import pathlib
 
 
-class BaseWrangler(abc.ABC):
+from lib.types import BaseStrictSingleton
+
+
+class BaseWrangler(BaseStrictSingleton):
     def __init__(
         self,
         src_dataset_path: pathlib.PosixPath,
