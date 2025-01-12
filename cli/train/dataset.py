@@ -1,7 +1,7 @@
-import h5py  # TODO: order bug
 import pathlib
 import typing as tp
 
+import h5py
 import torch
 
 from lib.sample_transforms.transforms import BaseRawModelInputOutputTransform
@@ -16,7 +16,7 @@ class HDF5Dataset(torch.utils.data.Dataset):
             self,
             hdf5_file_path: pathlib.PosixPath,
             transforms: tp.Tuple[BaseRawModelInputOutputTransform, ...]
-     ):
+    ):
         self._transforms = transforms
         self._hdf5_file = h5py.File(hdf5_file_path, "r")
         self._hdf5_ds_input = self._hdf5_file["input"]
