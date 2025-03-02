@@ -1,0 +1,11 @@
+{
+    "train_dataset": {
+        "path": "/var/lib/storage/data/benchmarks/machine_translation/wmt/wmt23_ruen/wrangled/raw_train.h5",
+        "limit": 100000
+    },
+    "tokenizer": {
+        "type": "CharacterTokenizer",
+        "params": {}
+    },
+    "save_path": "/home/david_tyuman/my_github/dl_dev/character_tokenizer_dict.json"
+}

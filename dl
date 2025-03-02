@@ -9,6 +9,7 @@ import logging  # TODO: move it somewhere deeper
 from cli.split import split_add_cmdargs
 from cli.tensorboard import tensorboard_add_cmdargs
 from cli.train import train_add_cmdargs
+from cli.train_tokenizer import train_tokenizer_add_cmdargs
 from cli.wrangle_dataset import wrangle_dataset_add_cmdargs
 
 
@@ -32,6 +33,7 @@ def main():
     split_add_cmdargs(parser, subparsers)
     tensorboard_add_cmdargs(parser, subparsers)
     train_add_cmdargs(parser, subparsers)
+    train_tokenizer_add_cmdargs(parser, subparsers)
     wrangle_dataset_add_cmdargs(parser, subparsers)
 
     cmd_args: argparse.Namespace = parser.parse_args()
