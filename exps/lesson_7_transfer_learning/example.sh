@@ -10,13 +10,13 @@ SPLIT_RAW_DATASET="\
     --dst0 /var/lib/storage/data/cv_fall_2022/lesson_7_transfer_learning/wrangled/raw_train.h5 \
     --dst1 /var/lib/storage/data/cv_fall_2022/lesson_7_transfer_learning/wrangled/raw_val.h5 \
     --th 0.9 \
-    --mode random \
+    --mode random
 "
 START_LEARNING="\
 ./dl train \
     --net_factory_function_impl ./exps/lesson_7_transfer_learning/configs/net_factory_function.py \
     --learning_config ./exps/lesson_7_transfer_learning/configs/learning_process.json \
-    --log-level INFO \
+    --log-level INFO
 "
 
 
