@@ -16,10 +16,10 @@ class _BaseConfig:
 
 
 @dataclasses.dataclass(frozen=True)
-class TransformConfig(_BaseConfig):
+class TokenizerConfig(_BaseConfig):
     pass
 
 
 @dataclasses.dataclass(frozen=True)
-class TokenizerConfig(_BaseConfig):
+class TransformConfig(_BaseConfig):
     pass

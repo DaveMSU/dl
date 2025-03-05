@@ -115,6 +115,6 @@ def create_a_neural_network_instance():
                 )
             )
 
-        def forward(self, x: torch.Tensor) -> torch.Tensor:
+        def forward(self, x: torch.Tensor, *args, **kwargs) -> torch.Tensor:
             return self.head(self.backbone(x))
     return NeuralNetwork()
