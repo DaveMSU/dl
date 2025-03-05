@@ -45,6 +45,18 @@ class InputOrOutputImageToNDArray(BaseInputOrOutputTransform):
             raise TypeError("The sample has to be an instance of PIL's Image")
 
 
+class InputOrOutputIntToOneHot(BaseInputOrOutputTransform):
+    def __init__(self, field: str, amount_of_classes: int):
+        super().__init__(field)
+        assert amount_of_classes >= 2
+        self._amount_of_classes = amount_of_classes
+
+    def __call__(self, sample: RawModelInputOutputPairSample) -> None:
+        one_hot = np.zeros(self._amount_of_classes, dtype=np.float32)
+        one_hot[getattr(sample, self._field)] = 1.0
+        setattr(sample, self._field, one_hot)
+
+
 class InputOrOutputStrToInt(BaseInputOrOutputTransform):
     def __init__(self, field: str, mapper: tp.Dict[str, int]):
         super().__init__(field)
@@ -62,15 +74,3 @@ class InputOrOutputStrToInt(BaseInputOrOutputTransform):
                 " has occured instead"
             )
         setattr(sample, self._field, the_int)
-
-
-class InputOrOutputIntToOneHot(BaseInputOrOutputTransform):
-    def __init__(self, field: str, amount_of_classes: int):
-        super().__init__(field)
-        assert amount_of_classes >= 2
-        self._amount_of_classes = amount_of_classes
-
-    def __call__(self, sample: RawModelInputOutputPairSample) -> None:
-        one_hot = np.zeros(self._amount_of_classes, dtype=np.float32)
-        one_hot[getattr(sample, self._field)] = 1.0
-        setattr(sample, self._field, one_hot)

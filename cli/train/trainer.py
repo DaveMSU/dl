@@ -93,7 +93,7 @@ class Trainer:  # TODO: make it a singleton
     ) -> float:
         X = X.to(self._cntx.device)
         Y = Y.to(self._cntx.device)
-        Y_pred = self._cntx.net(X)
+        Y_pred = self._cntx.net(X, Y)
         loss_value = self._cntx.loss(Y_pred, Y)
         if mode == LearningMode.TRAIN:
             loss_value.backward()

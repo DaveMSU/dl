@@ -254,7 +254,7 @@ def create_a_neural_network_instance():
             future_backbone.remove_layer("fc")
             return future_backbone
 
-        def forward(self, x: torch.Tensor) -> torch.Tensor:
+        def forward(self, x: torch.Tensor, *args, **kwargs) -> torch.Tensor:
             out = self.backbone(x)
             return self.head(out)
     return NeuralNetwork()
