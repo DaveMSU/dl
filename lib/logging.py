@@ -39,8 +39,8 @@ def _calculate_mean_cossine_for_axis_0(
                 row_ids.add((first_row, second_row))
                 cum_mean += (
                     cosine(
-                        arr[first_row].reshape(-1),
-                        arr[second_row].reshape(-1)
+                        arr[first_row].reshape(-1).astype(np.double),
+                        arr[second_row].reshape(-1).astype(np.double)
                     ) - cum_mean
                 ) / len(row_ids)
         return cum_mean
