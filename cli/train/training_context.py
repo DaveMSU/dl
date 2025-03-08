@@ -4,6 +4,7 @@ import typing as tp
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
+from . import custom_losses
 from .dataset import HDF5Dataset
 from .learning_config import LearningConfig, UpdationLevel
 from .net_factory import NetFactory
@@ -181,8 +182,12 @@ class TrainingContext:  # TODO: deal with _attrs
 
     @wrap_in_logger(level="debug", ignore_args=(0,))
     def _init_hyper_params(self, learning_config: LearningConfig) -> None:
+        if hasattr(torch.nn, learning_config.hyper_params.loss.type):
+            lib_to_import_from = torch.nn
+        else:
+            lib_to_import_from = custom_losses
         self._loss = getattr(
-            torch.nn,
+            lib_to_import_from,
             learning_config.hyper_params.loss.type
         )(
             **learning_config.hyper_params.loss.params
