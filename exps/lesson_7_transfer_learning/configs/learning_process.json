@@ -278,7 +278,10 @@
     },
     "device": "cuda:0",
     "tensorboard_logs": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_7_transfer_learning/test/tensorboard_runs",
-    "checkpoint_dir": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_7_transfer_learning/test/checkpoints",
+    "checkpoint": {
+        "directory": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_7_transfer_learning/test/checkpoints",
+        "interval_steps": 1024
+    },
     "metrics": {
         "main": "accuracy",
         "all": [

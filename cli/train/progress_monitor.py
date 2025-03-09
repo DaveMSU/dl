@@ -216,6 +216,11 @@ class ProgressMonitor:
         self._processing_epoch = None
         self._logger.info(f"epoch `{self._last_finished_epoch}` has finished")
 
+    @property
+    def number_of_seen_train_batches(self) -> tp.Optional[int]:
+        batch_stats = self._last_batch_stats[LearningMode.TRAIN]
+        return 0 if batch_stats is None else (batch_stats.number + 1)
+
     def get_running_epoch_loss_value(self, mode: LearningMode) -> float:
         return self._loss_value[mode].buffer.get_value()
 

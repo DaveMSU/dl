@@ -42,7 +42,10 @@
     },
     "device": "cuda:1",
     "tensorboard_logs": "/var/lib/storage/resources/experiments/other/mnist/test/tensorboard_runs",
-    "checkpoint_dir": "/var/lib/storage/resources/experiments/other/mnist/test/checkpoints",
+    "checkpoint": {
+        "directory": "/var/lib/storage/resources/experiments/other/mnist/test/checkpoints",
+        "interval_steps": 3001
+    },
     "metrics": {
         "main": "accuracy",
         "all": [

@@ -67,6 +67,12 @@ class _HyperParamsConfig:
 
 
 @dataclasses.dataclass(frozen=True)
+class _CheckpointConfig:
+    directory: pathlib.PosixPath
+    interval_steps: int
+
+
+@dataclasses.dataclass(frozen=True)
 class _SubNetOutputConfig:
     sub_net_name: str
     number_of_vectors: int
@@ -110,7 +116,7 @@ class LearningConfig:
     hyper_params: _HyperParamsConfig
     device: str  # f.e.: "cuda:0"
     tensorboard_logs: pathlib.PosixPath
-    checkpoint_dir: pathlib.PosixPath
+    checkpoint: _CheckpointConfig
     metrics: ManyMetricsConfig
 
     @classmethod
@@ -174,7 +180,10 @@ class LearningConfig:
             ),
             device=d["device"],
             tensorboard_logs=pathlib.Path(d["tensorboard_logs"]),
-            checkpoint_dir=pathlib.Path(d["checkpoint_dir"]),
+            checkpoint=_CheckpointConfig(
+                directory=pathlib.Path(d["checkpoint"]["directory"]),
+                interval_steps=d["checkpoint"]["interval_steps"],
+            ),
             metrics=ManyMetricsConfig(
                 main=d["metrics"]["main"],
                 all=list(map(OneMetricConfig.from_dict, d["metrics"]["all"]))

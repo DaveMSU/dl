@@ -113,17 +113,25 @@ class TrainingContext:  # TODO: deal with _attrs
         return self._checkpoint_dir
 
     @wrap_in_logger(level="debug", ignore_args=(0,))
-    def save_checkpoint(self, basename: str) -> None:
-        torch.save(
-            {
-                "model_state_dict": self._net.state_dict(),
-                "optimizer_state_dict": self._optimizer.state_dict(),
-                "loss_state_dict": self._loss.state_dict(),
-                "lr_scheduler_state_dict": self._lr_scheduler.state_dict(),
-                "device": self._device,
-            },
-            self._checkpoint_dir / f"{basename}.pth"
-        )
+    def maybe_save_checkpoint(
+            self,
+            done_steps: int,
+            force: bool = False,
+            basename_tag: str = '',
+    ) -> True:
+        if force or (done_steps % self._checkpoint_interval_steps == 0):
+            assert done_steps > 0  # it could, but not practically rn
+            basename: str = str(done_steps).zfill(6) + basename_tag
+            torch.save(
+                {
+                    "model_state_dict": self._net.state_dict(),
+                    "optimizer_state_dict": self._optimizer.state_dict(),
+                    "loss_state_dict": self._loss.state_dict(),
+                    "lr_scheduler_state_dict": self._lr_scheduler.state_dict(),
+                    "device": self._device,
+                },
+                self._checkpoint_dir / f"{basename}.pth"
+            )
 
     def load_checkpoint(self, path: pathlib.PosixPath) -> None:
         checkpoint = torch.load(path, map_location=self._device)
@@ -213,5 +221,11 @@ class TrainingContext:  # TODO: deal with _attrs
             self,
             learning_config: LearningConfig
     ) -> None:
-        learning_config.checkpoint_dir.mkdir(parents=False, exist_ok=True)
-        self._checkpoint_dir = learning_config.checkpoint_dir
+        learning_config.checkpoint.directory.mkdir(
+            parents=False,
+            exist_ok=True,
+        )
+        self._checkpoint_dir: pathlib.PosixPath = \
+            learning_config.checkpoint.directory
+        self._checkpoint_interval_steps: int = \
+            learning_config.checkpoint.interval_steps
