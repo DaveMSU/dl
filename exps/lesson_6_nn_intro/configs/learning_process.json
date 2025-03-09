@@ -154,7 +154,10 @@
     },
     "device": "cuda:0",
     "tensorboard_logs": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_6_nn_intro/test/tensorboard_runs",
-    "checkpoint_dir": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_6_nn_intro/test/checkpoints",
+    "checkpoint": {
+        "directory": "/var/lib/storage/resources/experiments/cv_fall_2022/lesson_6_nn_intro/test/checkpoints",
+        "interval_steps": 7000
+    },
     "metrics": {
         "main": "rmse",
         "all": [

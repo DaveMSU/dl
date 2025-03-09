@@ -58,8 +58,11 @@ class Trainer:  # TODO: make it a singleton
                 LearningMode.VAL
             )
             if self._progress_monitor.best_moment.epoch == epoch:
-                self._cntx.save_checkpoint("best")
-            self._cntx.save_checkpoint("last")
+                self._cntx.maybe_save_checkpoint(
+                    self._progress_monitor.number_of_seen_train_batches,
+                    force=True,
+                    basename_tag=".new_best",
+                )
 
     @wrap_in_logger(level="debug", ignore_args=(0,))
     def _process_dataset(self, mode: LearningMode) -> None:
@@ -75,6 +78,9 @@ class Trainer:  # TODO: make it a singleton
                 self._cntx.optimizer.step()
                 self._cntx.optimizer.zero_grad()
             self._cntx.lr_scheduler.step(UpdationLevel.GSTEP, batch_loss, mode)  # noqa: E501
+            self._cntx.maybe_save_checkpoint(
+                self._progress_monitor.number_of_seen_train_batches,
+            )
             # TODO: may be next line should be moved after GA maintainance
             self._progress_monitor.log_updation(UpdationLevel.GSTEP, mode)
         self._cntx.lr_scheduler.step(
